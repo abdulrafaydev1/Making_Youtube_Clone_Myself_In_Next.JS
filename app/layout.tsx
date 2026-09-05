@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import Navbar from "@/components/Navbar";
 config.autoAddCss = false
 
 const inter = Inter({ subsets: ['latin'] })
@@ -32,20 +33,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className={inter.className}>
 
-        <nav className="bg-gray-800 p-4 bg-red">
-          <a href="/" className="text-white hover:text-gray-300 mr-4 ">Home</a>
-          <a href="/about" className="text-white hover:text-gray-300 mr-4">About</a>
-          <a href="/contact" className="text-white hover:text-gray-300 mr-4">Contact</a>
-          <a href="/portfolio" className="text-white hover:text-gray-300">Portfolio</a>
-        </nav>
+        <Navbar />
+        
+        {children}
 
-        <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
-          {children}
-        </div>
 
       </body>
     </html>
