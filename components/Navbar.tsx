@@ -37,7 +37,7 @@ export default function Navbar() {
                     </button>
 
                     {/* YouTube Logo */}
-                    <div className="flex cursor-pointer items-center gap-1">
+                     <div className="flex cursor-pointer items-center gap-1">
                         <FontAwesomeIcon
                             icon={faYoutube}
                             className="text-[31px] text-red-600"
