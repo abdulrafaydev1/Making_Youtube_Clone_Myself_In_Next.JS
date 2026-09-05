@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -9,8 +9,11 @@ import {
   faBell,
   faMagnifyingGlass,
   faMicrophone,
+  faPenToSquare,
   faPlay,
   faPlus,
+  faTowerBroadcast,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 
 type NavbarProps = {
@@ -23,6 +26,24 @@ type NavbarProps = {
 const iconButtonClass =
   "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:hover:bg-zinc-800";
 
+const createActions = [
+  {
+    label: "Upload video",
+    href: "/studio/upload",
+    icon: faUpload,
+  },
+  {
+    label: "Go live",
+    href: "/studio/live",
+    icon: faTowerBroadcast,
+  },
+  {
+    label: "Create post",
+    href: "/studio/posts/create",
+    icon: faPenToSquare,
+  },
+] as const;
+
 export default function Navbar({
   isDesktopSidebarExpanded,
   isMobileSidebarOpen,
@@ -30,6 +51,9 @@ export default function Navbar({
   onMobileMenuToggle,
 }: NavbarProps) {
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+    const createMenuRef = useRef<HTMLDivElement>(null);
+    const createButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (!isMobileSearchOpen) return;
@@ -41,6 +65,39 @@ export default function Navbar({
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isMobileSearchOpen]);
+
+    useEffect(() => {
+        if (!isCreateMenuOpen) return;
+
+        const handlePointerDown = (event: PointerEvent) => {
+            const target = event.target;
+
+            if (
+                target instanceof Node &&
+                createMenuRef.current &&
+                !createMenuRef.current.contains(target)
+            ) {
+                setIsCreateMenuOpen(false);
+            }
+        };
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                event.preventDefault();
+                event.stopPropagation();
+                setIsCreateMenuOpen(false);
+                createButtonRef.current?.focus();
+            }
+        };
+
+        document.addEventListener("pointerdown", handlePointerDown);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("pointerdown", handlePointerDown);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isCreateMenuOpen]);
 
     const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -123,20 +180,80 @@ export default function Navbar({
                     <button
                         type="button"
                         aria-label="Open search"
-                        onClick={() => setIsMobileSearchOpen(true)}
+                        onClick={() => {
+                            setIsCreateMenuOpen(false);
+                            setIsMobileSearchOpen(true);
+                        }}
                         className={`${iconButtonClass} md:hidden`}
                     >
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
 
-                    <button
-                        type="button"
-                        aria-label="Create"
-                        className="hidden h-9 items-center gap-2 rounded-full bg-zinc-100 px-3 text-sm font-medium transition-colors hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:flex dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                    <div
+                        ref={createMenuRef}
+                        onBlur={(event) => {
+                            const nextTarget = event.relatedTarget;
+
+                            if (
+                                nextTarget instanceof Node &&
+                                !event.currentTarget.contains(nextTarget)
+                            ) {
+                                setIsCreateMenuOpen(false);
+                            }
+                        }}
+                        className="relative shrink-0"
                     >
-                        <FontAwesomeIcon icon={faPlus} />
-                        <span className="hidden lg:inline">Create</span>
-                    </button>
+                        <button
+                            ref={createButtonRef}
+                            id="create-menu-button"
+                            type="button"
+                            aria-label="Create"
+                            aria-haspopup="menu"
+                            aria-controls="create-menu"
+                            aria-expanded={isCreateMenuOpen}
+                            onClick={() => setIsCreateMenuOpen((isOpen) => !isOpen)}
+                            className="inline-flex h-9 shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-full bg-zinc-100 px-4 text-sm font-medium transition-colors hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                        >
+                            <FontAwesomeIcon icon={faPlus} />
+                            <span>Create</span>
+                        </button>
+
+                        <div
+                            id="create-menu"
+                            role="menu"
+                            aria-labelledby="create-menu-button"
+                            aria-hidden={!isCreateMenuOpen}
+                            inert={!isCreateMenuOpen}
+                            style={{ width: "180px", padding: "6px", backgroundColor: "#282828" }}
+                            className={`absolute right-0 top-full z-[70] mt-2 w-44 max-w-[calc(100vw-1rem)] origin-top-right overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 p-2 text-white shadow-xl transition-[opacity,transform] duration-200 ease-out motion-reduce:transform-none motion-reduce:transition-none ${
+                                isCreateMenuOpen
+                                    ? "translate-y-0 scale-100 opacity-100"
+                                    : "pointer-events-none -translate-y-1 scale-95 opacity-0"
+                            }`}
+                        >
+                            {createActions.map((action) => (
+                                <Link
+                                    key={action.href}
+                                    href={action.href}
+                                    prefetch={false}
+                                    role="menuitem"
+                                    onClick={() => setIsCreateMenuOpen(false)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === " ") {
+                                            event.preventDefault();
+                                            event.currentTarget.click();
+                                        }
+                                    }}
+                                    className="flex h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium whitespace-nowrap transition-colors hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                                >
+                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden="true">
+                                        <FontAwesomeIcon icon={action.icon} fixedWidth />
+                                    </span>
+                                    <span className="whitespace-nowrap">{action.label}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
 
                     <button
                         type="button"
