@@ -11,12 +11,12 @@ const Navbar = () => {
                     <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-900 ">
                         <FontAwesomeIcon icon={faBars} className="text-xl" />
                     </button>
-
-                    <img
+                    <a href=""> <img
                         src="/images/youtubelogo.png"
                         alt="YouTube Logo"
-                        className="h-6 w-auto"
-                    />
+                        className="w-30 ccursor-pointer"
+                    /></a>
+
                 </div>
 
                 {/* CENTER SEARCH */}
@@ -42,7 +42,7 @@ const Navbar = () => {
                 {/* RIGHT */}
                 <div className="flex items-center gap-2">
 
-                    <button className="flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200">
+                    <button className="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium hover:bg-gray-200">
                         <FontAwesomeIcon icon={faPlus} />
                         <span className="hidden sm:inline">Create</span>
                     </button>
