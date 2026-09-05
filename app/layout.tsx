@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import { config } from '@fortawesome/fontawesome-svg-core'  
+import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 
@@ -34,7 +34,20 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+
+        <nav className="bg-gray-800 p-4 bg-red">
+          <a href="/" className="text-white hover:text-gray-300 mr-4 ">Home</a>
+          <a href="/about" className="text-white hover:text-gray-300 mr-4">About</a>
+          <a href="/contact" className="text-white hover:text-gray-300 mr-4">Contact</a>
+          <a href="/portfolio" className="text-white hover:text-gray-300">Portfolio</a>
+        </nav>
+
+        <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
+          {children}
+        </div>
+
+      </body>
     </html>
   );
 }

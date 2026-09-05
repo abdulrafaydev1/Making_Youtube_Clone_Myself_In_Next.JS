@@ -1,11 +1,10 @@
-import Image from "next/image";
- 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse, faHamburger, faBars  } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   return (
-    <>
-      <h1>Welcome to Next.js!</h1>
-      <Image src="/next.svg" alt="Next.js logo" width={100} height={100} />
-    </>
+    <div>
+     
+    </div>
   );
 }
