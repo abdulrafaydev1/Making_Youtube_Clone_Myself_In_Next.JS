@@ -4,13 +4,13 @@ import { faBars, faPlus, faBell, faCircleUser } from "@fortawesome/free-solid-sv
 const Navbar = () => {
     return (
         <>
-            <div className="flex items-center  bg-black-800 text-white  w-full h-10">
+            <div className="flex items-center justify-between p-4 relative h-14 ">
                 <div className="flex items-center gap-2">
                     <FontAwesomeIcon icon={faBars} />
                     <img src="/images/youtubelogo.png" alt="YouTube Logo" />
                 </div>
-                <div className="flex items-center gap-2 absolute left-1/2 transform -translate-x-1/2">
-                    <input className="border-1 p-4 " type="text" placeholder="Search..." />
+                <div className="flex items-center gap-2 absolute left-1/2 transform -translate-x-1/2 ">
+                    <input className="  w-[500px] px-10   border-[0.1px] p-2  rounded-full" type="text" placeholder="Search..." />
                     <button>Search</button>
                 </div>
                 <div className="absolute right-4 flex items-center gap-2">
